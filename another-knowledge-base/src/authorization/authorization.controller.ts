@@ -1,8 +1,9 @@
-import { Controller, Post, Req, UseGuards } from '@nestjs/common';
+import { Controller, Post, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { CustomRequest } from '../authorization/interfaces/user.interface';
 import { AuthorizationService } from './authorization.service';
 import { LocalAuthGuard } from './guards/local-auth.guard';
+import { UserDecorator } from './decorators/user.decorator';
+import { User } from 'src/user/entities/user.entity';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -15,8 +16,7 @@ export class AuthorizationController {
   })
   @Post('login')
   @UseGuards(LocalAuthGuard)
-  async login(@Req() req: CustomRequest) {
-    const { user } = req;
+  async login(@UserDecorator() user: User) {
     return this.authorizationService.login(user);
   }
 }
